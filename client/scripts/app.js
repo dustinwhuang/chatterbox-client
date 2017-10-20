@@ -5,12 +5,12 @@ class App {
   }
 
   init() {
-    this.server = "http://parse.sfm6.hackreactor.com/chatterbox/classes/messages";
+    this.server = 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages';
   }
 
   send(data) {
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: this.server,
       data: data
       // success: success,
@@ -52,14 +52,14 @@ class App {
     $('.spinner').toggle();
     let value = $('input').val();
     let message = {
-        username: 'Mel Brooks',
-        text: `${value}`,
-        roomname: 'lobby'
+      username: 'Mel Brooks',
+      text: `${value}`,
+      roomname: 'lobby'
     };
 
     // this.send([]);
   }
-};
+}
 
 let app = new App();
 
