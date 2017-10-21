@@ -4,8 +4,8 @@ class App {
     this.server;
   }
 
-  init() {
-    this.server = 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages';
+  init(server) {
+    this.server = server;
   }
 
   send(data) {
@@ -18,14 +18,14 @@ class App {
     });
   }
 
-  fetch() {
-    let data;
-    $.ajax({
+  fetch(cb) {
+    let data = $.ajax({
       url: this.server,
-      data: data
+      // data: data
       // success: success,
       // dataType: dataType
-    });
+    }).done(() => cb.apply(this))
+      .fail(() => console.log('failure'));
     return data;
   }
 
@@ -57,11 +57,12 @@ class App {
       roomname: 'lobby'
     };
 
-    // this.send([]);
+    this.send(message);
   }
 }
 
 let app = new App();
+app.init('http://parse.sfm6.hackreactor.com/chatterbox/classes/messages');
 
 
 $(document).ready(function() {
@@ -74,4 +75,13 @@ $(document).ready(function() {
 
 });
 
-// console.log(app.fetch());
+
+let printMessages = function() {
+  let messages = data.responseJSON.results;
+  messages.forEach(message => app.renderMessage(message));
+};
+
+//TODO: fix circular reference to data
+let data = app.fetch(printMessages);
+
+
