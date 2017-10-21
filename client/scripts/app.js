@@ -33,11 +33,18 @@ class App {
     $('#chats').html('');
   }
 
-  renderMessage(message) {
-    $('#chats').prepend(`<div class=message>
-                        <div class=username>${message.username}:</div>
-                        <div class=text>${message.text}</div>
-                        </div>`);
+  renderMessage(message, element, first = true) {
+    if (first) {
+      $('#chats').prepend(`<div class=message id=${message.objectId}>
+                          <div class=username>${message.username}:</div>
+                          <div class=text>${message.text}</div>
+                          </div>`);
+    } else {
+      $(element).after(`<div class=message id=${message.objectId}>
+                          <div class=username>${message.username}:</div>
+                          <div class=text>${message.text}</div>
+                          </div>`);
+    }
   }
 
   renderRoom(roomName) {
@@ -77,14 +84,24 @@ $(document).ready(function() {
 
 
 let printMessages = function(data) {
-  let messages = data.responseJSON.results; messages.forEach(message => app.renderMessage(message));
+  let objectId = $('#chats').find('.message:first').attr('id');
+  let messages = data.responseJSON.results;
+
+  for (let i = messages.length - 1; i >= 0 && messages[i].objectId !== objectId; i--) {
+    if (i === messages.length - 1) {
+      app.renderMessage(messages[i]);
+    } else {
+      app.renderMessage(messages[i], `#${messages[i + 1].objectId}`, false);
+    }
+  }
 };
 
 //TODO: fix circular reference to data
 let refresh = function() {
   app.fetch(printMessages);
 
-  setTimeout (() => refresh(), 5000);
+  setTimeout (() => refresh(), 1000);
 };
 
 refresh();
+// console.log($('#chats').find('.message:first').attr('id'));
