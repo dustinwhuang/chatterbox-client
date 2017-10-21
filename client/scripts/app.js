@@ -34,16 +34,14 @@ class App {
   }
 
   renderMessage(message, element, first = true) {
+    let template = `<div class=message id=${message.objectId}>
+                    <div class=username id=${message.roomname}>${message.username}:</div>
+                    <div class=templateext>${message.text}</div>
+                    </div>`;
     if (first) {
-      $('#chats').prepend(`<div class=message id=${message.objectId}>
-                          <div class=username>${message.username}:</div>
-                          <div class=text>${message.text}</div>
-                          </div>`);
+      $('#chats').prepend(template);
     } else {
-      $(element).after(`<div class=message id=${message.objectId}>
-                          <div class=username>${message.username}:</div>
-                          <div class=text>${message.text}</div>
-                          </div>`);
+      $(element).after(template);
     }
   }
 
@@ -58,6 +56,7 @@ class App {
   handleSubmit() {
     $('.spinner').toggle();
     let value = $('input').val();
+console.log(value);
     let message = {
       username: 'Mel Brooks',
       text: `${value}`,
@@ -77,6 +76,10 @@ $(document).ready(function() {
   $(document).on('click', '.username', () => app.handleUsernameClick());
 
   $(document).on('submit', '.submit', () => app.handleSubmit());
+
+  $(document).on('click', '#roomSelect', () => {
+    //$('#roomSelect option:selected').text()
+  });
 
   $(document).on('click', '.submit', () => app.handleSubmit());
 
