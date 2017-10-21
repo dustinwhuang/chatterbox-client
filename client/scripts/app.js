@@ -24,7 +24,7 @@ class App {
       // data: data
       // success: success,
       // dataType: dataType
-    }).done(() => cb.apply(this))
+    }).done(() => cb.call(this, data))
       .fail(() => console.log('failure'));
     return data;
   }
@@ -34,7 +34,7 @@ class App {
   }
 
   renderMessage(message) {
-    $('#chats').append(`<div class=message>
+    $('#chats').prepend(`<div class=message>
                         <div class=username>${message.username}:</div>
                         <div class=text>${message.text}</div>
                         </div>`);
@@ -76,12 +76,15 @@ $(document).ready(function() {
 });
 
 
-let printMessages = function() {
-  let messages = data.responseJSON.results;
-  messages.forEach(message => app.renderMessage(message));
+let printMessages = function(data) {
+  let messages = data.responseJSON.results; messages.forEach(message => app.renderMessage(message));
 };
 
 //TODO: fix circular reference to data
-let data = app.fetch(printMessages);
+let refresh = function() {
+  app.fetch(printMessages);
 
+  setTimeout (() => refresh(), 5000);
+};
 
+refresh();
